@@ -27,17 +27,26 @@ const clearBtn = document.querySelector('#clear-canvas');
 const rainbowBtn = document.querySelector('#rainbow-mode');
 
 /****************************
+ * HELPER FUNCTION *
+ ****************************/
+
+// Get the color class from an element (color-1, color-2, etc.)
+function getColorClass(element) {
+    return Array.from(element.classList).find(cls => cls.startsWith('color-'));
+}
+
+/****************************
  * EVENT LISTENER FUNCTIONS *
  ****************************/
 
 function handlePaletteClick(event) {
-    console.log('Palette clicked!', event.target);
     rainbowMode = false;
     rainbowBtn.textContent = '🌈 Rainbow Mode';
-    const selectedColor = event.target.classList[1];
-    const currentColor = currentBrush.classList[1];
+    const selectedColor = getColorClass(event.target);
+    const currentColor = getColorClass(currentBrush);
     console.log('Changing brush from', currentColor, 'to', selectedColor);
-    currentBrush.classList.replace(currentColor, selectedColor);
+    currentBrush.classList.remove(currentColor);
+    currentBrush.classList.add(selectedColor);
 }
 
 function handleSquareClick(event) {
@@ -48,31 +57,28 @@ function handleSquareClick(event) {
 
 function handleSquareMouseEnter(event) {
     if (isMouseDown) {
-        console.log('Dragging over square');
         const square = event.target;
         paintSquare(square);
     }
 }
 
 function paintSquare(square) {
-    console.log('Painting square...');
-    const currentColor = square.classList[1];
+    const currentColor = getColorClass(square);
     let newColor;
     
     if (rainbowMode) {
         const colors = ['color-1', 'color-2', 'color-3', 'color-4', 'color-5'];
         newColor = colors[Math.floor(Math.random() * colors.length)];
     } else {
-        newColor = currentBrush.classList[1];
+        newColor = getColorClass(currentBrush);
     }
     
     console.log('Current:', currentColor, 'New:', newColor);
     
     if (currentColor && newColor) {
-        square.classList.replace(currentColor, newColor);
-        console.log('Color replaced!');
-    } else {
-        console.log('ERROR: Missing color!', 'current:', currentColor, 'new:', newColor);
+        square.classList.remove(currentColor);
+        square.classList.add(newColor);
+        console.log('Color changed!');
     }
     
     square.classList.add('sparkle');
@@ -81,20 +87,18 @@ function paintSquare(square) {
 
 function handleMouseDown() {
     isMouseDown = true;
-    console.log('Mouse down');
 }
 
 function handleMouseUp() {
     isMouseDown = false;
-    console.log('Mouse up');
 }
 
 function clearCanvas() {
-    console.log('Clearing canvas');
     canvasSquares.forEach(square => {
-        const currentColor = square.classList[1];
+        const currentColor = getColorClass(square);
         if (currentColor) {
-            square.classList.replace(currentColor, 'color-8');
+            square.classList.remove(currentColor);
+            square.classList.add('color-8');
         }
     });
 }
@@ -106,7 +110,6 @@ function toggleRainbowMode() {
     } else {
         rainbowBtn.textContent = '🌈 Rainbow Mode';
     }
-    console.log('Rainbow mode:', rainbowMode);
 }
 
 /**************************
@@ -131,5 +134,4 @@ rainbowBtn.addEventListener('click', toggleRainbowMode);
 console.log('🎨 Pixel Paint Studio loaded successfully!');
 console.log('Canvas squares found:', canvasSquares.length);
 console.log('Palette colors found:', paletteColors.length);
-console.log('Current brush element:', currentBrush);
-console.log('Current brush color:', currentBrush.classList[1]);
+console.log('Current brush color:', getColorClass(currentBrush));
