@@ -1,78 +1,135 @@
 /*******************
- * OUR HELPER CODE *
-*******************/
+ * PIXEL PAINT APP *
+ *******************/
 
 const gridWidth = 10;
-let count = 0;
-while (count <= gridWidth * gridWidth) {
-const canvas = document.querySelector('.canvas');
 let isMouseDown = false;
-const square = document.createElement('div');
-square.classList.add('square');
-canvas.appendChild(square);
-count++;
+let rainbowMode = false;
+
+// Create the canvas grid FIRST
+const canvas = document.querySelector('.canvas');
+let count = 0;
+
+while (count < gridWidth * gridWidth) {
+    const square = document.createElement('div');
+    square.classList.add('square', 'color-8');
+    canvas.appendChild(square);
+    count++;
 }
 
-// You probably should NOT do these in the order below.
-// That is, you probably should NOT do all the queries,
-// THEN all the functions,
-// THEN all the wiring.
-
-// Instead, it'll be easier if you go one action at a time!
-// So, add a query for the palette colors.
-// THEN add an event listener function for what happens when one is clicked.
-// THEN wire those two together, so that when the palette elements are clicked,
-// the function runs.
-//
-// And proceed from there to getting the squares working.
-//
-
-const squares = document.querySelectorAll('.square');
+/***********
+ * QUERIES *
+ ***********/
 const paletteColors = document.querySelectorAll('.palette-color');
-const brush = document.querySelector('#current-brush');
+const currentBrush = document.querySelector('#current-brush');
+const canvasSquares = document.querySelectorAll('.square');
+const clearBtn = document.querySelector('#clear-canvas');
+const rainbowBtn = document.querySelector('#rainbow-mode');
 
 /****************************
  * EVENT LISTENER FUNCTIONS *
-****************************/
-
-function handleSquareClick(event) {
-  const currentColor = brush.classList[1];
-  event.target.classList.replace(event.target.classList[1], currentColor);
-}
+ ****************************/
 
 function handlePaletteClick(event) {
-  const newColor = event.target.classList[1];
-  brush.classList.replace(brush.classList[1], newColor);
+    console.log('Palette clicked!', event.target);
+    rainbowMode = false;
+    rainbowBtn.textContent = '🌈 Rainbow Mode';
+    const selectedColor = event.target.classList[1];
+    const currentColor = currentBrush.classList[1];
+    console.log('Changing brush from', currentColor, 'to', selectedColor);
+    currentBrush.classList.replace(currentColor, selectedColor);
 }
 
-function handleMouseEnter(event) {
-  if (isMouseDown) {
-    const currentColor = brush.classList[1];
-    event.target.classList.replace(event.target.classList[1], currentColor);
-  }
+function handleSquareClick(event) {
+    console.log('Square clicked!', event.target);
+    const square = event.target;
+    paintSquare(square);
+}
+
+function handleSquareMouseEnter(event) {
+    if (isMouseDown) {
+        console.log('Dragging over square');
+        const square = event.target;
+        paintSquare(square);
+    }
+}
+
+function paintSquare(square) {
+    console.log('Painting square...');
+    const currentColor = square.classList[1];
+    let newColor;
+    
+    if (rainbowMode) {
+        const colors = ['color-1', 'color-2', 'color-3', 'color-4', 'color-5'];
+        newColor = colors[Math.floor(Math.random() * colors.length)];
+    } else {
+        newColor = currentBrush.classList[1];
+    }
+    
+    console.log('Current:', currentColor, 'New:', newColor);
+    
+    if (currentColor && newColor) {
+        square.classList.replace(currentColor, newColor);
+        console.log('Color replaced!');
+    } else {
+        console.log('ERROR: Missing color!', 'current:', currentColor, 'new:', newColor);
+    }
+    
+    square.classList.add('sparkle');
+    setTimeout(() => square.classList.remove('sparkle'), 600);
 }
 
 function handleMouseDown() {
-  isMouseDown = true;
+    isMouseDown = true;
+    console.log('Mouse down');
 }
 
 function handleMouseUp() {
-  isMouseDown = false;
+    isMouseDown = false;
+    console.log('Mouse up');
+}
+
+function clearCanvas() {
+    console.log('Clearing canvas');
+    canvasSquares.forEach(square => {
+        const currentColor = square.classList[1];
+        if (currentColor) {
+            square.classList.replace(currentColor, 'color-8');
+        }
+    });
+}
+
+function toggleRainbowMode() {
+    rainbowMode = !rainbowMode;
+    if (rainbowMode) {
+        rainbowBtn.textContent = '✨ Rainbow ON!';
+    } else {
+        rainbowBtn.textContent = '🌈 Rainbow Mode';
+    }
+    console.log('Rainbow mode:', rainbowMode);
 }
 
 /**************************
  * WIRING IT ALL TOGETHER *
-**************************/
+ **************************/
 
-
-squares.forEach(square => {
-  square.addEventListener('click', handleSquareClick);
-  square.addEventListener('mouseenter', handleMouseEnter);
+paletteColors.forEach(paletteColor => {
+    paletteColor.addEventListener('click', handlePaletteClick);
 });
 
-paletteColors.forEach(color => {
-  color.addEventListener('click', handlePaletteClick);
+canvasSquares.forEach(square => {
+    square.addEventListener('click', handleSquareClick);
+    square.addEventListener('mouseenter', handleSquareMouseEnter);
 });
 
 document.addEventListener('mousedown', handleMouseDown);
 document.addEventListener('mouseup', handleMouseUp);
+
+clearBtn.addEventListener('click', clearCanvas);
+rainbowBtn.addEventListener('click', toggleRainbowMode);
+
+console.log('🎨 Pixel Paint Studio loaded successfully!');
+console.log('Canvas squares found:', canvasSquares.length);
+console.log('Palette colors found:', paletteColors.length);
+console.log('Current brush element:', currentBrush);
+console.log('Current brush color:', currentBrush.classList[1]);

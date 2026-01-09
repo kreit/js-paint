@@ -1,37 +1,37 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <title>BS Paint 1.0</title>
+<head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link href="./style.css" rel="stylesheet" type="text/css">
-  </head>
-  <body>
-    <section class="app">
-      <section class="headings">
-        <h3>JS Paint</h3>
-        <p class="message">Paint away!</p>
-      </section>
-      <section class="paint">
-        <section class="brush-selection">
-          <section class="palette">
-            <img class="icon palette-icon" src="palette.png" alt="Palette Icon">
-            <div class="palette-color color-1"></div>
-            <div class="palette-color color-2"></div>
-            <div class="palette-color color-3"></div>
-            <div class="palette-color color-4"></div>
-            <div class="palette-color color-5"></div>
-          </section>
-          <section class="brush">
-            <div id="current-brush" class="color-2">
-              <img class="icon brush-icon" src="paintbrush.png" alt="Brush Icon">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>✨ Pixel Paint Studio ✨</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="app">
+        <div class="headings">
+            <h1>🎨 Pixel Paint Studio</h1>
+            <p>Click or drag to paint your masterpiece!</p>
+        </div>
+        <div class="brush-selection">
+            <div class="palette">
+                <div class="palette-color color-1" title="Red"></div>
+                <div class="palette-color color-2" title="Orange"></div>
+                <div class="palette-color color-3" title="Yellow"></div>
+                <div class="palette-color color-4" title="Green"></div>
+                <div class="palette-color color-5" title="Blue"></div>
+                <div class="palette-color color-8" title="Eraser"></div>
             </div>
-          </section>
-        </section>
-        <section class="canvas">
-        </section>
-      </section>
-    </section>
-    <script src="./main.js"></script>
-  </body>
+            <div class="brush">
+                <img class="icon" src="paintbrush.png" alt="Brush Icon">
+                <div id="current-brush" class="color-1"></div>
+            </div>
+        </div>
+        <div class="paint">
+            <div class="canvas"></div>
+            <button id="clear-canvas" class="clear-btn">🗑️ Clear Canvas</button>
+            <button id="rainbow-mode" class="rainbow-btn">🌈 Rainbow Mode</button>
+        </div>
+    </div>
+    <script src="main.js"></script>
+</body>
 </html>
